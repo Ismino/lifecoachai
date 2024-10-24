@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <View>
       <Text>Welcome to the Home Screen!</Text>
-      <Link href="./login">
+      <Link href="/(tabs)/LoginScreen">
         <Text>Go to Login</Text>
       </Link>
     </View>
