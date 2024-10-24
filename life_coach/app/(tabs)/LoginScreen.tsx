@@ -58,7 +58,7 @@ export default function LoginScreen() {
       <TextInput placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
       <Button title="Login" onPress={handleLogin} />
       {error && <Text>{error}</Text>}
-      <Link href="./main">
+      <Link href="/(tabs)/MainScreen">
         <Text>Go to Main Screen</Text>
       </Link>
     </View>
