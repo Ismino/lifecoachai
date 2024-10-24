@@ -13,4 +13,19 @@ root.render(
   </React.StrictMode>
 );/*/
 
+import React from 'react';
+import { View, Text, Button } from 'react-native';
+import { Link } from 'expo-router';
+
+export default function Home() {
+  return (
+    <View>
+      <Text>Welcome to the Home Screen!</Text>
+      <Link href="./login">
+        <Text>Go to Login</Text>
+      </Link>
+    </View>
+  );
+}
+
 

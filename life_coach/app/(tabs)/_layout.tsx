@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+/*/import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
@@ -33,5 +33,19 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+  );
+}
+/*/
+
+import { Stack } from 'expo-router';
+
+export default function Layout() {
+  return (
+    <Stack>
+      <Stack.Screen name="index" options={{ title: 'Home' }} />  {/* Home screen */}
+      <Stack.Screen name="login" />
+      <Stack.Screen name="main" />
+      <Stack.Screen name="details" />
+    </Stack>
   );
 }

@@ -1,5 +1,5 @@
 
-import { StackParamList } from '../types/types';
+/*/import { StackParamList } from '../types/types';
 import React from 'react';
 import { View, Text } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
@@ -17,6 +17,10 @@ export default function DetailScreen({ route }: Props) {
       <Text>{session.title}</Text>
     </View>
   );
-}
+}/*/
+
+
+
+
 
 
