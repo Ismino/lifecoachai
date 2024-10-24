@@ -4,8 +4,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen';
 import MainScreen from '../screens/MainScreen';
 import DetailScreen from '../screens/DetailScreen';
+import { StackParamList } from '@/types/types';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<StackParamList>();
 
 export default function App() {
   return (

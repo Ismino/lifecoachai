@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from '../types/types';
 
 type MainScreenProps = {
-  navigation: NativeStackNavigationProp<StackParamList, 'MainScreen'>;
+  navigation: NativeStackNavigationProp<StackParamList, 'Main'>; // Change to 'Main'
 };
 
 export default function MainScreen({ navigation }: MainScreenProps) {
@@ -17,15 +17,16 @@ export default function MainScreen({ navigation }: MainScreenProps) {
     <View>
       <Text>Main Screen</Text>
       <FlatList
-      data={sessions}
-      keyExtractor={item => item.id}
-      renderItem={({ item }) => (
-        <Text onPress={() => navigation.navigate('DetailScreen', { session: item })}>
+        data={sessions}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <Text onPress={() => navigation.navigate('Details', { session: item })}>
             {item.title}
-    </Text>
-  )}
-   />   
+          </Text>
+        )}
+      />
     </View>
   );
 }
+
 
