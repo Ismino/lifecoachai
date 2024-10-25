@@ -36,16 +36,33 @@ export default function TabLayout() {
   );
 }
 /*/
-
-import { Stack } from 'expo-router';
+import { Stack, Tabs } from 'expo-router';
 
 export default function Layout() {
   return (
     <Stack>
+      {/* Stack Screens */}
       <Stack.Screen name="index" options={{ title: 'Home' }} />  {/* Home screen */}
-      <Stack.Screen name="login" />
-      <Stack.Screen name="main" />
-      <Stack.Screen name="details" />
+      <Stack.Screen name="login" options={{ title: 'Login' }} />
+
+      {/* This is how to set up tabs correctly */}
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
     </Stack>
   );
 }
+
+// Create another file to define your tabs layout.
+export function TabsLayout() {
+  return (
+    <Tabs>
+      <Tabs.Screen name="MainScreen" options={{ title: 'Sessions' }} />
+      <Tabs.Screen name="DetailScreen" options={{ title: 'Details' }} />
+    </Tabs>
+  );
+}
+
+
+
+
+
+
