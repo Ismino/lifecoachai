@@ -2,15 +2,15 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router'; // Import the hooks
+import { useLocalSearchParams, useRouter } from 'expo-router'; // Importera hooks
 
 export default function DetailScreen() {
-  const params = useLocalSearchParams(); // Get local search parameters
-  const sessionId = params.sessionId; // Access sessionId from parameters
-  const router = useRouter(); // Initialize router for navigation
+  const params = useLocalSearchParams(); // Hämta lokala sökparametrar
+  const sessionId = params.sessionId; // Få sessionId från parametrar
+  const router = useRouter(); // Initiera router för navigering
 
-  const handleGoBack = () => {
-    router.push('/(tabs)/'); // Navigate to the Home Screen (index.tsx)
+  const handleGoToChat = () => {
+    router.push('/(tabs)/ChatScreen'); // Navigera till ChatScreen
   };
 
   return (
@@ -21,8 +21,8 @@ export default function DetailScreen() {
       ) : (
         <Text style={styles.error}>No session ID provided.</Text>
       )}
-      <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-        <Text style={styles.buttonText}>Go Back</Text>
+      <TouchableOpacity style={styles.button} onPress={handleGoToChat}>
+        <Text style={styles.buttonText}>Chat with AI Coach</Text>
       </TouchableOpacity>
     </View>
   );
@@ -31,38 +31,39 @@ export default function DetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f4f8', // Light background color
+    backgroundColor: '#f0f4f8', // Ljus bakgrundsfärg
     padding: 20,
-    justifyContent: 'center', // Center content vertically
+    justifyContent: 'center', // Centrera innehållet vertikalt
   },
   header: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#2c3e50', // Dark text color for the header
+    color: '#2c3e50', // Mörk textfärg för headern
     marginBottom: 20,
-    textAlign: 'center', // Center the header text
+    textAlign: 'center', // Centrera headertexten
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333', // Dark text color for session details
+    color: '#333', // Mörk textfärg för sessiondetaljer
     marginBottom: 20,
-    textAlign: 'center', // Center the title text
+    textAlign: 'center', // Centrera titeltexten
   },
   error: {
     fontSize: 18,
-    color: 'red', // Red text color for error messages
-    textAlign: 'center', // Center the error message
+    color: 'red', // Röd textfärg för felmeddelanden
+    textAlign: 'center', // Centrera felmeddelandet
   },
   button: {
-    backgroundColor: '#007BFF', // Primary color for buttons
+    backgroundColor: '#007BFF', // Primär färg för knappar
     padding: 15,
     borderRadius: 5,
-    marginTop: 20, // Space above the button
+    marginTop: 20, // Utrymme ovanför knappen
   },
   buttonText: {
-    color: '#fff', // White text color for button text
+    color: '#fff', // Vit textfärg för knapptext
     fontSize: 18,
     textAlign: 'center',
   },
 });
+
