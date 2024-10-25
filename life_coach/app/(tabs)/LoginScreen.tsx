@@ -28,7 +28,7 @@ export default function LoginScreen() {
     </View>
   );
 }
-/*/
+
 
 // app/(tabs)/LoginScreen.tsx
 
@@ -123,5 +123,127 @@ const styles = StyleSheet.create({
     color: '#007BFF', // Link color
     textAlign: 'center',
     marginTop: 20,
+  },
+});
+/*/
+
+// app/(tabs)/LoginScreen.tsx
+
+// app/(tabs)/LoginScreen.tsx
+
+import React, { useState } from 'react';
+import { auth } from '../../config/firebaseConfig';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Link, useRouter } from 'expo-router'; // Import useRouter
+
+export default function LoginScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false); // State to toggle between login and registration
+  const router = useRouter(); // Initialize router for navigation
+
+  const handleLogin = async () => {
+    const trimmedEmail = email.trim();
+    
+    // Validation checks
+    if (!trimmedEmail || !password) {
+      setError('Please enter both email and password.');
+      return;
+    }
+    
+    try {
+      await signInWithEmailAndPassword(auth, trimmedEmail, password);
+      // Navigate to Main screen after successful login
+      router.push('/(tabs)/MainScreen'); // Update to your actual MainScreen path
+    } catch (err) {
+      const errorMessage = (err as Error).message;
+      setError('Login error: ' + errorMessage);
+    }
+  };
+
+  const handleRegister = async () => {
+    const trimmedEmail = email.trim();
+    
+    // Validation checks
+    if (!trimmedEmail || !password) {
+      setError('Please enter both email and password.');
+      return;
+    }
+
+    try {
+      await createUserWithEmailAndPassword(auth, trimmedEmail, password);
+      // Navigate to Main screen after successful registration
+      router.push('/(tabs)/MainScreen'); // Update to your actual MainScreen path
+    } catch (err) {
+      const errorMessage = (err as Error).message;
+      setError('Registration error: ' + errorMessage);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <TextInput 
+        placeholder="Email" 
+        value={email} 
+        onChangeText={setEmail} 
+        style={styles.input} 
+      />
+      <TextInput 
+        placeholder="Password" 
+        secureTextEntry 
+        value={password} 
+        onChangeText={setPassword} 
+        style={styles.input} 
+      />
+      
+      {isRegistering ? (
+        <>
+          <Button title="Register" onPress={handleRegister} />
+          <TouchableOpacity onPress={() => setIsRegistering(false)}>
+            <Text style={styles.toggleText}>Already have an account? Login</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <Button title="Login" onPress={handleLogin} />
+          <TouchableOpacity onPress={() => setIsRegistering(true)}>
+            <Text style={styles.toggleText}>Don't have an account? Register</Text>
+          </TouchableOpacity>
+        </>
+      )}
+
+      {error && <Text style={styles.error}>{error}</Text>}
+      <Link href="/(tabs)/MainScreen">
+        <Text>Go to Main Screen</Text>
+      </Link>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f0f4f8',
+    padding: 20,
+  },
+  input: {
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+  },
+  error: {
+    fontSize: 16,
+    color: 'red',
+  },
+  toggleText: {
+    color: '#007BFF', // Link color
+    marginTop: 10,
+    textAlign: 'center',
   },
 });
