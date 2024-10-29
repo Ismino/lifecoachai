@@ -2,51 +2,47 @@
 
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { getMessagesBySession } from '../database';
+import { useRouter } from 'expo-router';
+import { getAllSessions } from '../database';
 
-interface Message {
-  id: string;
-  text: string;
-  sender: 'user' | 'ai';
+interface Session {
+  sessionId: number;
 }
 
 export default function DetailScreen() {
-  const { sessionId } = useLocalSearchParams();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    if (sessionId) {
-      getMessagesBySession(Number(sessionId), (loadedMessages: { id: number; text: string; sender: string }[]) => {
-        const formattedMessages: Message[] = loadedMessages.map((msg) => ({
-          id: String(msg.id),
-          text: msg.text,
-          sender: msg.sender as 'user' | 'ai',
-        }));
-        setMessages(formattedMessages);
-      });
-    }
-  }, [sessionId]);
+    loadSessions();
+  }, []);
 
-  const handleGoToChat = () => {
-    router.push('/(tabs)/ChatScreen'); // Navigera till ChatScreen
+  const loadSessions = () => {
+    getAllSessions((loadedSessions: { sessionId: number }[]) => {
+      console.log("Loaded sessions:", loadedSessions); // Lägg till denna logg
+      setSessions(loadedSessions);
+    });
+  };
+
+  const handleGoToChat = (sessionId?: number) => {
+    router.push({ pathname: '/(tabs)/ChatScreen', params: { sessionId: String(sessionId || new Date().getTime()) } });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Session Details for ID: {sessionId}</Text>
+      <Text style={styles.header}>Alla Tidigare Chattar</Text>
       <FlatList
-        data={messages}
-        keyExtractor={(item) => item.id}
+        data={sessions}
+        keyExtractor={(item) => item.sessionId.toString()}
         renderItem={({ item }) => (
-          <View style={[styles.messageContainer, item.sender === 'user' ? styles.userMessage : styles.aiMessage]}>
-            <Text style={styles.messageText}>{item.text}</Text>
-          </View>
+          <TouchableOpacity style={styles.sessionItem} onPress={() => handleGoToChat(item.sessionId)}>
+            <Text style={styles.sessionText}>Session ID: {item.sessionId}</Text>
+          </TouchableOpacity>
         )}
+        ListEmptyComponent={<Text style={styles.emptyText}>Inga tidigare chattar tillgängliga</Text>}
       />
-      <TouchableOpacity style={styles.button} onPress={handleGoToChat}>
-        <Text style={styles.buttonText}>Chat with AI Coach</Text>
+      <TouchableOpacity style={styles.newChatButton} onPress={() => handleGoToChat()}>
+        <Text style={styles.buttonText}>Starta ny chatt</Text>
       </TouchableOpacity>
     </View>
   );
@@ -55,12 +51,16 @@ export default function DetailScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: '#f0f4f8' },
   header: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-  messageContainer: { padding: 10, borderRadius: 5, marginVertical: 5 },
-  userMessage: { backgroundColor: '#007BFF', alignSelf: 'flex-end' },
-  aiMessage: { backgroundColor: '#e0e0e0', alignSelf: 'flex-start' },
-  messageText: { color: '#fff' },
-  button: {
+  sessionItem: {
     backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 5,
+    marginVertical: 10,
+  },
+  sessionText: { color: '#fff', fontSize: 18, textAlign: 'center' },
+  emptyText: { color: '#555', fontSize: 18, textAlign: 'center', marginTop: 20 },
+  newChatButton: {
+    backgroundColor: '#28a745',
     padding: 15,
     borderRadius: 5,
     marginTop: 20,

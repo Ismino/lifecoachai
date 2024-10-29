@@ -1,8 +1,6 @@
 // app/(tabs)/ChatScreen.tsx
-// app/(tabs)/ChatScreen.tsx
-
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, Platform } from 'react-native'; // Lägg till Platform
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import Constants from 'expo-constants';
 import { createMessagesTable, saveMessage, getMessagesBySession } from '../database';
 import { useLocalSearchParams } from 'expo-router';
@@ -16,7 +14,7 @@ interface Message {
 export default function ChatScreen() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(false); // Lägg till laddningsstatus
+  const [isLoading, setIsLoading] = useState(false);
   const { sessionId } = useLocalSearchParams();
   const openaiApiKey = Constants.expoConfig?.extra?.openaiApiKey;
 
@@ -30,7 +28,7 @@ export default function ChatScreen() {
   const loadMessages = () => {
     if (Platform.OS !== 'web' && sessionId) {
       getMessagesBySession(Number(sessionId), (loadedMessages: { id: number; text: string; sender: string }[]) => {
-        const formattedMessages = loadedMessages.map(msg => ({
+        const formattedMessages = loadedMessages.map((msg: { id: number; text: string; sender: string }) => ({
           id: String(msg.id),
           text: msg.text,
           sender: msg.sender as 'user' | 'ai',
@@ -39,18 +37,18 @@ export default function ChatScreen() {
       });
     }
   };
+  
 
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return; // Returnera direkt om inmatningen är tom eller om ett anrop redan pågår
+    if (!input.trim() || isLoading) return;
 
-    // Lägg till användarens meddelande direkt
     const userMessage: Message = { id: String(messages.length + 1), text: input, sender: 'user' };
     setMessages(prevMessages => [...prevMessages, userMessage]);
-    if (Platform.OS !== 'web') {
+    if (Platform.OS !== 'web' && sessionId) {
       saveMessage(input, 'user', Number(sessionId));
     }
     setInput('');
-    setIsLoading(true); // Starta laddningsindikatorn
+    setIsLoading(true);
 
     try {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -74,13 +72,13 @@ export default function ChatScreen() {
       const aiMessage: Message = { id: String(messages.length + 2), text: aiResponse, sender: 'ai' };
 
       setMessages(prevMessages => [...prevMessages, aiMessage]);
-      if (Platform.OS !== 'web') {
+      if (Platform.OS !== 'web' && sessionId) {
         saveMessage(aiResponse, 'ai', Number(sessionId));
       }
     } catch (error) {
       console.error("Error fetching ChatGPT response:", error);
     } finally {
-      setIsLoading(false); // Stäng av laddningsindikatorn
+      setIsLoading(false);
     }
   };
 
@@ -105,7 +103,7 @@ export default function ChatScreen() {
         />
         <TouchableOpacity onPress={handleSend} style={styles.sendButton} disabled={isLoading}>
           {isLoading ? (
-            <ActivityIndicator color="#fff" /> // Visa laddningsindikator om ett anrop pågår
+            <ActivityIndicator color="#fff" />
           ) : (
             <Text style={styles.sendButtonText}>Skicka</Text>
           )}
