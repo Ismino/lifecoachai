@@ -34,13 +34,16 @@ export default function ChatScreen() {
           },
           body: JSON.stringify({
             model: "gpt-3.5-turbo", // Korrekt modellnamn (ändra till "gpt-4" om du har tillgång)
-            messages: [{ role: 'user', content: input }],
+            messages: [
+              { role: 'system', content: 'Du är en hjälpande AI och ska svara på svenska.' }, // Instruktion om att använda svenska
+              { role: 'user', content: input }
+            ],
             max_tokens: 50,
           }),
         });
 
         const data = await response.json();
-        const aiResponse = data.choices[0]?.message?.content || "Ingen respons från AI"; // Kontrollera att AI svarar
+        const aiResponse = data.choices[0]?.message?.content || "Ingen respons från AI";
 
         // Lägg till AI:s svar i chatten
         setMessages(prevMessages => [
