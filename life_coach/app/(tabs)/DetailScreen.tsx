@@ -1,12 +1,11 @@
 // app/(tabs)/DetailScreen.tsx
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { getAllSessions } from '../database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Session {
-  sessionId: number;
+  sessionId: string;
 }
 
 export default function DetailScreen() {
@@ -17,15 +16,19 @@ export default function DetailScreen() {
     loadSessions();
   }, []);
 
-  const loadSessions = () => {
-    getAllSessions((loadedSessions: { sessionId: number }[]) => {
-      console.log("Loaded sessions:", loadedSessions); // Lägg till denna logg
+  const loadSessions = async () => {
+    try {
+      const keys = await AsyncStorage.getAllKeys();
+      const sessionKeys = keys.filter((key) => key.startsWith('session_'));
+      const loadedSessions = sessionKeys.map((key) => ({ sessionId: key.replace('session_', '') }));
       setSessions(loadedSessions);
-    });
+    } catch (error) {
+      console.error("Error loading sessions:", error);
+    }
   };
 
-  const handleGoToChat = (sessionId?: number) => {
-    router.push({ pathname: '/(tabs)/ChatScreen', params: { sessionId: String(sessionId || new Date().getTime()) } });
+  const handleGoToChat = (sessionId: string) => {
+    router.push({ pathname: '/(tabs)/ChatScreen', params: { sessionId } });
   };
 
   return (
@@ -33,7 +36,7 @@ export default function DetailScreen() {
       <Text style={styles.header}>Alla Tidigare Chattar</Text>
       <FlatList
         data={sessions}
-        keyExtractor={(item) => item.sessionId.toString()}
+        keyExtractor={(item) => item.sessionId}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.sessionItem} onPress={() => handleGoToChat(item.sessionId)}>
             <Text style={styles.sessionText}>Session ID: {item.sessionId}</Text>
@@ -41,7 +44,7 @@ export default function DetailScreen() {
         )}
         ListEmptyComponent={<Text style={styles.emptyText}>Inga tidigare chattar tillgängliga</Text>}
       />
-      <TouchableOpacity style={styles.newChatButton} onPress={() => handleGoToChat()}>
+      <TouchableOpacity style={styles.newChatButton} onPress={() => handleGoToChat(new Date().getTime().toString())}>
         <Text style={styles.buttonText}>Starta ny chatt</Text>
       </TouchableOpacity>
     </View>

@@ -1,9 +1,9 @@
 // app/(tabs)/ChatScreen.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Constants from 'expo-constants';
-import { createMessagesTable, saveMessage, getMessagesBySession } from '../database';
-import { useLocalSearchParams } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 interface Message {
   id: string;
@@ -17,36 +17,38 @@ export default function ChatScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const { sessionId } = useLocalSearchParams();
   const openaiApiKey = Constants.expoConfig?.extra?.openaiApiKey;
+  const router = useRouter();
 
   useEffect(() => {
-    if (Platform.OS !== 'web') {
-      createMessagesTable();
-      loadMessages();
-    }
+    loadMessages();
   }, [sessionId]);
 
-  const loadMessages = () => {
-    if (Platform.OS !== 'web' && sessionId) {
-      getMessagesBySession(Number(sessionId), (loadedMessages: { id: number; text: string; sender: string }[]) => {
-        const formattedMessages = loadedMessages.map((msg: { id: number; text: string; sender: string }) => ({
-          id: String(msg.id),
-          text: msg.text,
-          sender: msg.sender as 'user' | 'ai',
-        }));
-        setMessages(formattedMessages);
-      });
+  const loadMessages = async () => {
+    try {
+      const storedMessages = await AsyncStorage.getItem(`session_${sessionId}`);
+      if (storedMessages) {
+        setMessages(JSON.parse(storedMessages));
+      }
+    } catch (error) {
+      console.error("Error loading messages:", error);
     }
   };
-  
+
+  const saveMessages = async (newMessages: Message[]) => {
+    try {
+      await AsyncStorage.setItem(`session_${sessionId}`, JSON.stringify(newMessages));
+    } catch (error) {
+      console.error("Error saving messages:", error);
+    }
+  };
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { id: String(messages.length + 1), text: input, sender: 'user' };
-    setMessages(prevMessages => [...prevMessages, userMessage]);
-    if (Platform.OS !== 'web' && sessionId) {
-      saveMessage(input, 'user', Number(sessionId));
-    }
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    saveMessages(updatedMessages);
     setInput('');
     setIsLoading(true);
 
@@ -59,10 +61,7 @@ export default function ChatScreen() {
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
-          messages: [
-            { role: 'system', content: 'Du är en hjälpande AI och ska svara på svenska.' },
-            { role: 'user', content: input }
-          ],
+          messages: [{ role: 'user', content: input }],
           max_tokens: 50,
         }),
       });
@@ -71,10 +70,9 @@ export default function ChatScreen() {
       const aiResponse = data.choices[0]?.message?.content || "Ingen respons från AI";
       const aiMessage: Message = { id: String(messages.length + 2), text: aiResponse, sender: 'ai' };
 
-      setMessages(prevMessages => [...prevMessages, aiMessage]);
-      if (Platform.OS !== 'web' && sessionId) {
-        saveMessage(aiResponse, 'ai', Number(sessionId));
-      }
+      const finalMessages = [...updatedMessages, aiMessage];
+      setMessages(finalMessages);
+      saveMessages(finalMessages);
     } catch (error) {
       console.error("Error fetching ChatGPT response:", error);
     } finally {
@@ -109,6 +107,9 @@ export default function ChatScreen() {
           )}
         </TouchableOpacity>
       </View>
+      <TouchableOpacity style={styles.backButton} onPress={() => router.push('/(tabs)/DetailScreen')}>
+        <Text style={styles.backButtonText}>Tillbaka till Tidigare Chattar</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -124,4 +125,6 @@ const styles = StyleSheet.create({
   userMessage: { backgroundColor: '#007BFF', alignSelf: 'flex-end' },
   aiMessage: { backgroundColor: '#e0e0e0', alignSelf: 'flex-start' },
   messageText: { color: '#fff' },
+  backButton: { backgroundColor: '#6c757d', padding: 10, borderRadius: 5, marginTop: 20, alignItems: 'center' },
+  backButtonText: { color: '#fff', fontSize: 16 },
 });
