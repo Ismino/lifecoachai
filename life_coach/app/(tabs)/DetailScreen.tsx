@@ -31,8 +31,21 @@ export default function DetailScreen() {
     router.push({ pathname: '/(tabs)/ChatScreen', params: { sessionId } });
   };
 
+  // Ändrad sökväg för att navigera till startsidan
+  const handleGoHome = () => {
+    router.push('/'); // Navigera till hemskärmen (root-sökvägen)
+  };
+
   return (
     <View style={styles.container}>
+      {/* Header med hamburgermeny */}
+      <View style={styles.headerContainer}>
+        <TouchableOpacity style={styles.menuButton}>
+          <Text style={styles.menuText}>☰</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Detaljer</Text>
+      </View>
+      
       <Text style={styles.header}>Alla Tidigare Chattar</Text>
       <FlatList
         data={sessions}
@@ -44,8 +57,15 @@ export default function DetailScreen() {
         )}
         ListEmptyComponent={<Text style={styles.emptyText}>Inga tidigare chattar tillgängliga</Text>}
       />
+      
+      {/* Knapp för att starta ny chatt */}
       <TouchableOpacity style={styles.newChatButton} onPress={() => handleGoToChat(new Date().getTime().toString())}>
         <Text style={styles.buttonText}>Starta ny chatt</Text>
+      </TouchableOpacity>
+
+      {/* Knapp för att gå till hemskärmen */}
+      <TouchableOpacity style={styles.homeButton} onPress={handleGoHome}>
+        <Text style={styles.buttonText}>Till Hemsida</Text>
       </TouchableOpacity>
     </View>
   );
@@ -53,21 +73,18 @@ export default function DetailScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: '#f0f4f8' },
+  
+  // Header-styling
+  headerContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
+  menuButton: { paddingRight: 10 },
+  menuText: { fontSize: 24 },
+  headerText: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', flex: 1 },
+
   header: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-  sessionItem: {
-    backgroundColor: '#007BFF',
-    padding: 15,
-    borderRadius: 5,
-    marginVertical: 10,
-  },
+  sessionItem: { backgroundColor: '#007BFF', padding: 15, borderRadius: 5, marginVertical: 10 },
   sessionText: { color: '#fff', fontSize: 18, textAlign: 'center' },
   emptyText: { color: '#555', fontSize: 18, textAlign: 'center', marginTop: 20 },
-  newChatButton: {
-    backgroundColor: '#28a745',
-    padding: 15,
-    borderRadius: 5,
-    marginTop: 20,
-    alignItems: 'center',
-  },
+  newChatButton: { backgroundColor: '#28a745', padding: 15, borderRadius: 5, marginTop: 20, alignItems: 'center' },
+  homeButton: { backgroundColor: '#ffc107', padding: 15, borderRadius: 5, marginTop: 20, alignItems: 'center' },
   buttonText: { color: '#fff', fontSize: 18 },
 });
