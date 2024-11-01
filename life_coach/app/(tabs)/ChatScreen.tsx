@@ -150,16 +150,16 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0f4f8', padding: 20 },
+  container: { flex: 1, backgroundColor: '#FFE5B4', padding: 20 },
   chatList: { flex: 1, marginBottom: 10 },
-  inputContainer: { flexDirection: 'row', alignItems: 'center' },
-  input: { flex: 1, borderColor: '#ccc', borderWidth: 1, borderRadius: 5, padding: 10, marginRight: 10, backgroundColor: '#fff' },
-  sendButton: { backgroundColor: '#007BFF', padding: 10, borderRadius: 5 },
-  sendButtonText: { color: '#fff', fontWeight: 'bold' },
-  messageContainer: { padding: 10, borderRadius: 5, marginVertical: 5, maxWidth: '80%' },
-  userMessage: { backgroundColor: '#007BFF', alignSelf: 'flex-end' },
-  aiMessage: { backgroundColor: '#e0e0e0', alignSelf: 'flex-start' },
+  inputContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFE5B4' },
+  input: { flex: 1, borderColor: '#ccc', borderWidth: 1, borderRadius: 5, padding: 10, marginRight: 10, backgroundColor: '#FFF5E5' },
+  sendButton: { backgroundColor: '#FFA07A', padding: 10, borderRadius: 25 },
+  sendButtonText: { color: '#fff', fontWeight: 'bold', backgroundColor: '#FFA07A' },
+  messageContainer: { padding: 10, borderRadius: 5, marginVertical: 5, maxWidth: '80%', backgroundColor: '#FFE5B4' },
+  userMessage: { backgroundColor: '#FFA07A', alignSelf: 'flex-end' },
+  aiMessage: { backgroundColor: '#CC735A', alignSelf: 'flex-start' },
   messageText: { color: '#fff' },
-  backButton: { backgroundColor: '#6c757d', padding: 10, borderRadius: 5, marginTop: 20, alignItems: 'center' },
-  backButtonText: { color: '#fff', fontSize: 16 },
+  backButton: { backgroundColor: '#FFA07A', padding: 10, borderRadius: 25, marginTop: 20, alignItems: 'center' },
+  backButtonText: { color: '#fff', fontSize: 16, backgroundColor: '#FFA07A' },
 });
