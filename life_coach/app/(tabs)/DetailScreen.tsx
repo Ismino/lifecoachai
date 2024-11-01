@@ -1,6 +1,6 @@
 // app/(tabs)/DetailScreen.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -63,55 +63,87 @@ export default function DetailScreen() {
       
       <Text style={styles.header}>Alla Tidigare Chattar</Text>
       <FlatList
-        data={sessions}
-        keyExtractor={(item) => item.sessionId}
-        renderItem={({ item }) => (
-          <View style={styles.sessionItemContainer}>
-            <TouchableOpacity
-              style={styles.sessionItem}
-              onPress={() => handleGoToChat(item.sessionId)}
-            >
-              <Text style={styles.sessionText}>{item.name}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => handleDeleteChat(item.sessionId)}
-            >
-              <Text style={styles.deleteButtonText}>Radera</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        ListEmptyComponent={<Text style={styles.emptyText}>Inga tidigare chattar tillgängliga</Text>}
-      />
+  data={sessions}
+  keyExtractor={(item) => item.sessionId}
+  contentContainerStyle={{ alignItems: 'center' }} // Center the entire list content
+  renderItem={({ item }) => (
+    <View style={styles.sessionItemContainer}>
+      <TouchableOpacity
+        style={styles.sessionItem}
+        onPress={() => handleGoToChat(item.sessionId)}
+      >
+        <Text style={styles.sessionText}>{item.name}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => handleDeleteChat(item.sessionId)}
+      >
+        <Text style={styles.deleteButtonText}>Radera</Text>
+      </TouchableOpacity>
+    </View>
+  )}
+  ListEmptyComponent={<Text style={styles.emptyText}>Inga tidigare chattar tillgängliga</Text>}
+/>
       
       <TouchableOpacity style={styles.newChatButton} onPress={() => handleGoToChat(new Date().getTime().toString())}>
         <Text style={styles.buttonText}>Starta ny chatt</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.homeButton} onPress={handleGoHome}>
-        <Text style={styles.buttonText}>Till Hemsida</Text>
+        <Text style={styles.buttonText}>Till Startsidan</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
+const { width } = Dimensions.get('window'); // För att justera knappstorleken beroende på skärmstorlek
+const buttonWidth = width * 0.4; // Anpassa bredden till 40% av skärmbredden
+
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#FFCBA4' }, // Ljus persikoton
+  container: { flex: 1, padding: 20, backgroundColor: '#FFE5B4' },
   headerContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
   menuButton: { paddingRight: 10 },
   menuText: { fontSize: 24 },
-  headerText: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', flex: 1 },
-  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+  headerText: { fontSize: 24, fontWeight: 'bold', color: '#FFA07A', textAlign: 'center', flex: 1 },
+  header: { fontSize: 24, fontWeight: 'bold', color: '#FFA07A', marginBottom: 20, textAlign: 'center' },
 
   sessionItemContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  sessionItem: { backgroundColor: '#FFA07A', padding: 15, borderRadius: 5, flex: 1, marginRight: 10 }, // Mörkare persikoton
-  sessionText: { color: '#fff', fontSize: 18, textAlign: 'center' },
-  
-  deleteButton: { backgroundColor: '#FF7F50', padding: 10, borderRadius: 5 }, // Rödaktig persikoton
+  sessionItem: {
+    backgroundColor: '#FFA07A',
+    padding: 12,
+    borderRadius: 25,
+    width: buttonWidth,
+    marginRight: 10,
+    alignItems: 'center',
+  },
+  sessionText: { color: '#fff', fontSize: 16, textAlign: 'center' },
+deleteButton: {
+  backgroundColor: '#FF7F50',
+  paddingVertical: 8,
+  paddingHorizontal: 16,
+  borderRadius: 25,
+  alignItems: 'center',
+},
   deleteButtonText: { color: '#fff', fontSize: 14, textAlign: 'center' },
 
   emptyText: { color: '#555', fontSize: 18, textAlign: 'center', marginTop: 20 },
-  newChatButton: { backgroundColor: '#FFA07A', padding: 15, borderRadius: 5, marginTop: 20, alignItems: 'center' }, // Mörkare persikoton
-  homeButton: { backgroundColor: '#FFA07A', padding: 15, borderRadius: 5, marginTop: 20, alignItems: 'center' }, // Mörkare persikoton
-  buttonText: { color: '#fff', fontSize: 18 },
+  newChatButton: {
+    backgroundColor: '#FFA07A',
+    padding: 12,
+    borderRadius: 25,
+    width: buttonWidth,
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginTop: 20,
+  },
+  homeButton: {
+    backgroundColor: '#FFA07A',
+    padding: 12,
+    borderRadius: 25,
+    width: buttonWidth,
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginTop: 10,
+  },
+  buttonText: { color: '#fff', fontSize: 16, textAlign: 'center' },
 });
