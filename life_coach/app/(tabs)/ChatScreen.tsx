@@ -15,30 +15,58 @@ export default function ChatScreen() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [chatName, setChatName] = useState<string | null>(null);
   const { sessionId } = useLocalSearchParams();
   const openaiApiKey = Constants.expoConfig?.extra?.openaiApiKey;
   const router = useRouter();
 
   useEffect(() => {
-    loadMessages();
+    loadSessionData();
   }, [sessionId]);
 
-  const loadMessages = async () => {
+  const loadSessionData = async () => {
     try {
       const storedMessages = await AsyncStorage.getItem(`session_${sessionId}`);
-      if (storedMessages) {
-        setMessages(JSON.parse(storedMessages));
-      }
+      const storedChatName = await AsyncStorage.getItem(`name_${sessionId}`);
+      if (storedMessages) setMessages(JSON.parse(storedMessages));
+      if (storedChatName) setChatName(storedChatName);
     } catch (error) {
-      console.error("Error loading messages:", error);
+      console.error("Error loading session data:", error);
     }
   };
 
-  const saveMessages = async (newMessages: Message[]) => {
+  const saveSessionData = async (newMessages: Message[], name?: string) => {
     try {
       await AsyncStorage.setItem(`session_${sessionId}`, JSON.stringify(newMessages));
+      if (name) {
+        await AsyncStorage.setItem(`name_${sessionId}`, name);
+      }
     } catch (error) {
-      console.error("Error saving messages:", error);
+      console.error("Error saving session data:", error);
+    }
+  };
+
+  const generateChatName = async (initialMessage: string) => {
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${openaiApiKey}`,
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [{ role: 'user', content: `Vad handlar följande om i ett ord eller två: "${initialMessage}"` }],
+          max_tokens: 10,
+        }),
+      });
+      const data = await response.json();
+      const suggestedName = data.choices[0]?.message?.content || "Namnlös chatt";
+      setChatName(suggestedName);
+      return suggestedName;
+    } catch (error) {
+      console.error("Error generating chat name:", error);
+      return "Namnlös chatt";
     }
   };
 
@@ -48,7 +76,14 @@ export default function ChatScreen() {
     const userMessage: Message = { id: String(messages.length + 1), text: input, sender: 'user' };
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
-    saveMessages(updatedMessages);
+
+    if (!chatName) {
+      const name = await generateChatName(input);
+      await saveSessionData(updatedMessages, name);
+    } else {
+      saveSessionData(updatedMessages);
+    }
+
     setInput('');
     setIsLoading(true);
 
@@ -72,7 +107,7 @@ export default function ChatScreen() {
 
       const finalMessages = [...updatedMessages, aiMessage];
       setMessages(finalMessages);
-      saveMessages(finalMessages);
+      saveSessionData(finalMessages);
     } catch (error) {
       console.error("Error fetching ChatGPT response:", error);
     } finally {

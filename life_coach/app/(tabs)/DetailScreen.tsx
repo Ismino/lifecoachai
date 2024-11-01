@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Session {
   sessionId: string;
+  name: string;
 }
 
 export default function DetailScreen() {
@@ -20,7 +21,13 @@ export default function DetailScreen() {
     try {
       const keys = await AsyncStorage.getAllKeys();
       const sessionKeys = keys.filter((key) => key.startsWith('session_'));
-      const loadedSessions = sessionKeys.map((key) => ({ sessionId: key.replace('session_', '') }));
+
+      const loadedSessions = await Promise.all(sessionKeys.map(async (key) => {
+        const sessionId = key.replace('session_', '');
+        const name = await AsyncStorage.getItem(`name_${sessionId}`);
+        return { sessionId, name: name || 'Unnamed Chat' };
+      }));
+
       setSessions(loadedSessions);
     } catch (error) {
       console.error("Error loading sessions:", error);
@@ -31,39 +38,26 @@ export default function DetailScreen() {
     router.push({ pathname: '/(tabs)/ChatScreen', params: { sessionId } });
   };
 
-  // Ändrad sökväg för att navigera till startsidan
   const handleGoHome = () => {
-    router.push('/'); // Navigera till hemskärmen (root-sökvägen)
+    router.push('/');
   };
 
   return (
     <View style={styles.container}>
-      {/* Header med hamburgermeny */}
-      <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.menuButton}>
-          <Text style={styles.menuText}>☰</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Detaljer</Text>
-      </View>
-      
       <Text style={styles.header}>Alla Tidigare Chattar</Text>
       <FlatList
         data={sessions}
         keyExtractor={(item) => item.sessionId}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.sessionItem} onPress={() => handleGoToChat(item.sessionId)}>
-            <Text style={styles.sessionText}>Session ID: {item.sessionId}</Text>
+            <Text style={styles.sessionText}>{item.name}</Text>
           </TouchableOpacity>
         )}
         ListEmptyComponent={<Text style={styles.emptyText}>Inga tidigare chattar tillgängliga</Text>}
       />
-      
-      {/* Knapp för att starta ny chatt */}
       <TouchableOpacity style={styles.newChatButton} onPress={() => handleGoToChat(new Date().getTime().toString())}>
         <Text style={styles.buttonText}>Starta ny chatt</Text>
       </TouchableOpacity>
-
-      {/* Knapp för att gå till hemskärmen */}
       <TouchableOpacity style={styles.homeButton} onPress={handleGoHome}>
         <Text style={styles.buttonText}>Till Hemsida</Text>
       </TouchableOpacity>
@@ -73,13 +67,6 @@ export default function DetailScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: '#f0f4f8' },
-  
-  // Header-styling
-  headerContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-  menuButton: { paddingRight: 10 },
-  menuText: { fontSize: 24 },
-  headerText: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', flex: 1 },
-
   header: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
   sessionItem: { backgroundColor: '#007BFF', padding: 15, borderRadius: 5, marginVertical: 10 },
   sessionText: { color: '#fff', fontSize: 18, textAlign: 'center' },
