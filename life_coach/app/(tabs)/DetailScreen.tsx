@@ -44,11 +44,8 @@ export default function DetailScreen() {
 
   const handleDeleteChat = async (sessionId: string) => {
     try {
-      // Radera från AsyncStorage
       await AsyncStorage.removeItem(`session_${sessionId}`);
       await AsyncStorage.removeItem(`name_${sessionId}`);
-      
-      // Uppdatera listan i gränssnittet
       setSessions((prevSessions) => prevSessions.filter((session) => session.sessionId !== sessionId));
     } catch (error) {
       console.error("Error deleting session:", error);
@@ -99,19 +96,22 @@ export default function DetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#f0f4f8' },
+  container: { flex: 1, padding: 20, backgroundColor: '#FFCBA4' }, // Ljus persikoton
   headerContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
   menuButton: { paddingRight: 10 },
   menuText: { fontSize: 24 },
   headerText: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', flex: 1 },
   header: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+
   sessionItemContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  sessionItem: { backgroundColor: '#007BFF', padding: 15, borderRadius: 5, flex: 1, marginRight: 10 },
+  sessionItem: { backgroundColor: '#FFA07A', padding: 15, borderRadius: 5, flex: 1, marginRight: 10 }, // Mörkare persikoton
   sessionText: { color: '#fff', fontSize: 18, textAlign: 'center' },
-  deleteButton: { backgroundColor: '#dc3545', padding: 10, borderRadius: 5 },
+  
+  deleteButton: { backgroundColor: '#FF7F50', padding: 10, borderRadius: 5 }, // Rödaktig persikoton
   deleteButtonText: { color: '#fff', fontSize: 14, textAlign: 'center' },
+
   emptyText: { color: '#555', fontSize: 18, textAlign: 'center', marginTop: 20 },
-  newChatButton: { backgroundColor: '#28a745', padding: 15, borderRadius: 5, marginTop: 20, alignItems: 'center' },
-  homeButton: { backgroundColor: '#ffc107', padding: 15, borderRadius: 5, marginTop: 20, alignItems: 'center' },
+  newChatButton: { backgroundColor: '#FFA07A', padding: 15, borderRadius: 5, marginTop: 20, alignItems: 'center' }, // Mörkare persikoton
+  homeButton: { backgroundColor: '#FFA07A', padding: 15, borderRadius: 5, marginTop: 20, alignItems: 'center' }, // Mörkare persikoton
   buttonText: { color: '#fff', fontSize: 18 },
 });
