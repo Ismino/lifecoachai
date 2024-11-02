@@ -43,10 +43,11 @@ const styles = StyleSheet.create({
   },
   link: {
     backgroundColor: '#FFA07A', // Primary color for buttons
-    padding: 15,
+    padding: 20,
     borderRadius: 25,
-    marginVertical: 10,
+    marginVertical: 15,
     textAlign: 'center', // Center the link text
+    margin: 60,
   },
   linkText: {
     color: '#fff', // White text color for link text

@@ -97,7 +97,7 @@ export default function DetailScreen() {
 }
 
 const { width } = Dimensions.get('window'); // För att justera knappstorleken beroende på skärmstorlek
-const buttonWidth = width * 0.4; // Anpassa bredden till 40% av skärmbredden
+const buttonWidth = width * 0.6; // Anpassa bredden till 40% av skärmbredden
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: '#FFE5B4' },
