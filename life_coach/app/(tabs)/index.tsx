@@ -20,30 +20,31 @@ export default function HomeScreen() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f4f8', // Light background color
+    backgroundColor: '#FFE5B4', // Light background color
     justifyContent: 'center', // Center content vertically
     padding: 20,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#2c3e50', // Dark text color
+    color: '#CC735A', // Dark text color
     marginBottom: 20,
     textAlign: 'center', // Center the title text
   },
   subtitle: {
     fontSize: 20,
-    color: '#555', // Gray text color for subtitle
+    color: '#CC735A', // Gray text color for subtitle
     marginBottom: 40,
     textAlign: 'center', // Center the subtitle text
   },
   link: {
-    backgroundColor: '#007BFF', // Primary color for buttons
+    backgroundColor: '#FFA07A', // Primary color for buttons
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 25,
     marginVertical: 10,
     textAlign: 'center', // Center the link text
   },

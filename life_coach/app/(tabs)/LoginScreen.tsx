@@ -1,153 +1,21 @@
-/*/import React, { useState } from 'react';
-import { auth } from '../config/firebaseConfig';
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { View, TextInput, Button, Text } from 'react-native';
-
-export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const handleLogin = async () => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // Logga in lyckades, navigera till nästa skärm
-    } catch (err) {
-        const errorMessage = (err as Error).message;
-        setError('Fel vid inloggning: ' + errorMessage);
-      }
-         
-  };
-
-  return (
-    <View>
-      <TextInput placeholder="E-post" value={email} onChangeText={setEmail} />
-      <TextInput placeholder="Lösenord" secureTextEntry value={password} onChangeText={setPassword} />
-      <Button title="Logga in" onPress={handleLogin} />
-      {error && <Text>{error}</Text>}
-    </View>
-  );
-}
-
-
-// app/(tabs)/LoginScreen.tsx
-
-import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { auth } from '../../config/firebaseConfig';
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { Link } from 'expo-router';
-
-export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const handleLogin = async () => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // Navigate to Main screen after successful login
-    } catch (err) {
-      const errorMessage = (err as Error).message;
-      setError('Login error: ' + errorMessage);
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Login</Text>
-      <TextInput 
-        placeholder="Email" 
-        value={email} 
-        onChangeText={setEmail} 
-        style={styles.input} 
-      />
-      <TextInput 
-        placeholder="Password" 
-        secureTextEntry 
-        value={password} 
-        onChangeText={setPassword} 
-        style={styles.input} 
-      />
-      <TouchableOpacity onPress={handleLogin} style={styles.button}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-      {error && <Text style={styles.error}>{error}</Text>}
-      <Link href="/(tabs)/MainScreen">
-        <Text style={styles.link}>Go to Main Screen</Text>
-      </Link>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f0f4f8', // Light background color
-    padding: 20,
-    justifyContent: 'center', // Center content vertically
-  },
-  header: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#2c3e50', // Darker text color for the header
-    marginBottom: 30,
-    textAlign: 'center', // Center the header text
-  },
-  input: {
-    height: 50,
-    borderColor: '#ccc', // Light border color
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff', // White background for input fields
-  },
-  button: {
-    backgroundColor: '#007BFF', // Primary color for buttons
-    padding: 15,
-    borderRadius: 5,
-    marginVertical: 10,
-  },
-  buttonText: {
-    color: '#fff', // White text color for button text
-    fontSize: 18,
-    textAlign: 'center',
-  },
-  error: {
-    fontSize: 16,
-    color: 'red', // Red text color for error messages
-    marginBottom: 10,
-  },
-  link: {
-    color: '#007BFF', // Link color
-    textAlign: 'center',
-    marginTop: 20,
-  },
-});
-/*/
-
-// app/(tabs)/LoginScreen.tsx
-
 // app/(tabs)/LoginScreen.tsx
 
 import React, { useState } from 'react';
 import { auth } from '../../config/firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Link, useRouter } from 'expo-router'; // Import useRouter
+import { Link, useRouter } from 'expo-router';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isRegistering, setIsRegistering] = useState(false); // State to toggle between login and registration
-  const router = useRouter(); // Initialize router for navigation
+  const [isRegistering, setIsRegistering] = useState(false);
+  const router = useRouter();
 
   const handleLogin = async () => {
     const trimmedEmail = email.trim();
     
-    // Validation checks
     if (!trimmedEmail || !password) {
       setError('Please enter both email and password.');
       return;
@@ -155,8 +23,7 @@ export default function LoginScreen() {
     
     try {
       await signInWithEmailAndPassword(auth, trimmedEmail, password);
-      // Navigate to Main screen after successful login
-      router.push('/(tabs)/MainScreen'); // Update to your actual MainScreen path
+      router.push('/(tabs)/MainScreen'); 
     } catch (err) {
       const errorMessage = (err as Error).message;
       setError('Login error: ' + errorMessage);
@@ -166,7 +33,6 @@ export default function LoginScreen() {
   const handleRegister = async () => {
     const trimmedEmail = email.trim();
     
-    // Validation checks
     if (!trimmedEmail || !password) {
       setError('Please enter both email and password.');
       return;
@@ -174,8 +40,7 @@ export default function LoginScreen() {
 
     try {
       await createUserWithEmailAndPassword(auth, trimmedEmail, password);
-      // Navigate to Main screen after successful registration
-      router.push('/(tabs)/MainScreen'); // Update to your actual MainScreen path
+      router.push('/(tabs)/MainScreen');
     } catch (err) {
       const errorMessage = (err as Error).message;
       setError('Registration error: ' + errorMessage);
@@ -200,14 +65,22 @@ export default function LoginScreen() {
       
       {isRegistering ? (
         <>
-          <Button title="Register" onPress={handleRegister} />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={handleRegister} style={styles.authButton}>
+              <Text style={styles.buttonText}>Register</Text>
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity onPress={() => setIsRegistering(false)}>
             <Text style={styles.toggleText}>Already have an account? Login</Text>
           </TouchableOpacity>
         </>
       ) : (
         <>
-          <Button title="Login" onPress={handleLogin} />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={handleLogin} style={styles.authButton}>
+              <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity onPress={() => setIsRegistering(true)}>
             <Text style={styles.toggleText}>Don't have an account? Register</Text>
           </TouchableOpacity>
@@ -216,7 +89,7 @@ export default function LoginScreen() {
 
       {error && <Text style={styles.error}>{error}</Text>}
       <Link href="/(tabs)/MainScreen">
-        <Text>Go to Main Screen</Text>
+        <Text style={styles.linkText}>Go to Main Screen</Text>
       </Link>
     </View>
   );
@@ -225,25 +98,52 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f4f8',
+    backgroundColor: '#FFE5B4',
     padding: 20,
   },
   input: {
     height: 50,
-    borderColor: '#ccc',
+    borderColor: '#FFA07A',
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 25,
     marginBottom: 15,
     paddingHorizontal: 10,
     backgroundColor: '#fff',
   },
+  buttonContainer: {
+    marginVertical: 10,
+    borderRadius: 25,
+    overflow: 'hidden',
+    width: '80%',
+    alignSelf: 'center',
+  },
+  authButton: {
+    backgroundColor: '#FFA07A',
+    paddingVertical: 12,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   error: {
     fontSize: 16,
     color: 'red',
-  },
-  toggleText: {
-    color: '#007BFF', // Link color
     marginTop: 10,
     textAlign: 'center',
+  },
+  toggleText: {
+    color: '#FFA07A',
+    fontSize: 16,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  linkText: {
+    color: '#007BFF',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 20,
   },
 });

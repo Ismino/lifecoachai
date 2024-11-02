@@ -38,20 +38,20 @@ export default function MainScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f4f8', // Light background color for the main screen
+    backgroundColor: '#FFE5B4', // Light background color for the main screen
     padding: 20,
   },
   header: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#2c3e50', // Darker text color for the header
+    color: '#CC735A', // Darker text color for the header
     marginBottom: 20,
     textAlign: 'center', // Center the header text
   },
   sessionButton: {
-    backgroundColor: '#007BFF', // A nice blue for buttons
+    backgroundColor: '#FFA07A', 
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 25,
     marginVertical: 10, // Space between buttons
     shadowColor: '#000', // Add shadow for a raised effect
     shadowOffset: {
