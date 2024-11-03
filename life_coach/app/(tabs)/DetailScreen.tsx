@@ -1,6 +1,6 @@
 // app/(tabs)/DetailScreen.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -54,36 +54,29 @@ export default function DetailScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.menuButton}>
-          <Text style={styles.menuText}>☰</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Detaljer</Text>
-      </View>
-      
       <Text style={styles.header}>Alla Tidigare Chattar</Text>
       <FlatList
-  data={sessions}
-  keyExtractor={(item) => item.sessionId}
-  contentContainerStyle={{ alignItems: 'center' }} // Center the entire list content
-  renderItem={({ item }) => (
-    <View style={styles.sessionItemContainer}>
-      <TouchableOpacity
-        style={styles.sessionItem}
-        onPress={() => handleGoToChat(item.sessionId)}
-      >
-        <Text style={styles.sessionText}>{item.name}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.deleteButton}
-        onPress={() => handleDeleteChat(item.sessionId)}
-      >
-        <Text style={styles.deleteButtonText}>Radera</Text>
-      </TouchableOpacity>
-    </View>
-  )}
-  ListEmptyComponent={<Text style={styles.emptyText}>Inga tidigare chattar tillgängliga</Text>}
-/>
+        data={sessions}
+        keyExtractor={(item) => item.sessionId}
+        contentContainerStyle={{ alignItems: 'center' }}
+        renderItem={({ item }) => (
+          <View style={styles.sessionItemContainer}>
+            <TouchableOpacity
+              style={styles.sessionButton}
+              onPress={() => handleGoToChat(item.sessionId)}
+            >
+              <Text style={styles.sessionTitle}>{item.name}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => handleDeleteChat(item.sessionId)}
+            >
+              <Text style={styles.deleteButtonText}>Radera</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        ListEmptyComponent={<Text style={styles.emptyText}>Inga tidigare chattar tillgängliga</Text>}
+      />
       
       <TouchableOpacity style={styles.newChatButton} onPress={() => handleGoToChat(new Date().getTime().toString())}>
         <Text style={styles.buttonText}>Starta ny chatt</Text>
@@ -96,54 +89,85 @@ export default function DetailScreen() {
   );
 }
 
-const { width } = Dimensions.get('window'); // För att justera knappstorleken beroende på skärmstorlek
-const buttonWidth = width * 0.6; // Anpassa bredden till 40% av skärmbredden
-
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#FFE5B4' },
-  headerContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-  menuButton: { paddingRight: 10 },
-  menuText: { fontSize: 24 },
-  headerText: { fontSize: 24, fontWeight: 'bold', color: '#FFA07A', textAlign: 'center', flex: 1 },
-  header: { fontSize: 24, fontWeight: 'bold', color: '#FFA07A', marginBottom: 20, textAlign: 'center' },
-
-  sessionItemContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  sessionItem: {
-    backgroundColor: '#FFA07A',
-    padding: 12,
-    borderRadius: 25,
-    width: buttonWidth,
-    marginRight: 10,
-    alignItems: 'center',
+  container: {
+    flex: 1,
+    backgroundColor: '#FFE5B4',
+    padding: 20,
   },
-  sessionText: { color: '#fff', fontSize: 16, textAlign: 'center' },
-deleteButton: {
-  backgroundColor: '#FF7F50',
-  paddingVertical: 8,
-  paddingHorizontal: 16,
-  borderRadius: 25,
-  alignItems: 'center',
-},
+  header: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#CC735A',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  sessionItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  sessionButton: {
+    backgroundColor: '#FFA07A',
+    padding: 15,
+    borderRadius: 25,
+    marginVertical: 10,
+    width: '70%', // 70% width for responsiveness
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  sessionTitle: {
+    color: '#fff',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  deleteButton: {
+    backgroundColor: '#FF7F50',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 25,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
+  },
   deleteButtonText: { color: '#fff', fontSize: 14, textAlign: 'center' },
-
   emptyText: { color: '#555', fontSize: 18, textAlign: 'center', marginTop: 20 },
   newChatButton: {
     backgroundColor: '#FFA07A',
-    padding: 12,
+    padding: 15,
     borderRadius: 25,
-    width: buttonWidth,
+    marginVertical: 10,
     alignItems: 'center',
+    width: '70%', // 70% width for responsiveness
     alignSelf: 'center',
-    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
   },
   homeButton: {
     backgroundColor: '#FFA07A',
-    padding: 12,
+    padding: 15,
     borderRadius: 25,
-    width: buttonWidth,
+    marginVertical: 10,
     alignItems: 'center',
+    width: '70%', // 70% width for responsiveness
     alignSelf: 'center',
-    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
   },
-  buttonText: { color: '#fff', fontSize: 16, textAlign: 'center' },
+  buttonText: { color: '#fff', fontSize: 18, textAlign: 'center' },
 });
+
