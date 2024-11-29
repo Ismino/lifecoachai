@@ -36,31 +36,42 @@ export default function TabLayout() {
   );
 }
 /*/
-import { Stack, Tabs } from 'expo-router';
 
+// Importerar navigeringskomponenterna från Expo Router
+import { Stack, Tabs } from 'expo-router'; 
+
+// Layout-funktion för att definiera navigeringsstacken
 export default function Layout() {
   return (
     <Stack>
-      {/* Stack Screens */}
-      <Stack.Screen name="index" options={{ title: 'Home' }} />  {/* Home screen */}
-      <Stack.Screen name="login" options={{ title: 'Login' }} />
+      {/* Definierar en stack-baserad navigation */}
+      <Stack.Screen name="index" options={{ title: 'Home' }} />
+      {/* Skärmar i stacken:
+          - "index": Startskärmen med titeln "Home" i appens header. */}
 
-      {/* This is how to set up tabs correctly */}
+      <Stack.Screen name="login" options={{ title: 'Login' }} />
+      {/* Skärm för inloggning, med titeln "Login". */}
+
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      {/* En undernivå för flik-baserad navigation (tabs). 
+          - "headerShown: false" döljer huvudrubriken för denna stack. */}
     </Stack>
   );
 }
 
-// Create another file to define your tabs layout.
+// Funktion för att definiera flikarna (tabs) i appen
 export function TabsLayout() {
   return (
     <Tabs>
+      {/* Flik-baserad navigation för applikationen */}
       <Tabs.Screen name="MainScreen" options={{ title: 'Sessions' }} />
+      {/* Första fliken: Visar "Sessions" som titeln och pekar på "MainScreen". */}
+
       <Tabs.Screen name="DetailScreen" options={{ title: 'Details' }} />
+      {/* Andra fliken: Visar "Details" som titeln och pekar på "DetailScreen". */}
     </Tabs>
   );
 }
-
 
 
 
